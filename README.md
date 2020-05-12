@@ -27,7 +27,7 @@ Below is a list of all artifacts that will be provisioned:
 ## Using Oracle Resource Manager (ORM)
 
 1. clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. zip the content of the `ods-tf-orm/ORM` folder.
+1. zip the content of the `oci-ods-orm/ORM` folder.
 1. From OCI **Console/Resource Manager**, create a new stack.
 1. Make sure you select **My Configurations** and then upload the zip file created in the previous step.
 1. Set a name for the stack and click Next.
@@ -68,7 +68,7 @@ Below is a list of all artifacts that will be provisioned:
 ## Using Terraform
 
 1. Clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. Navigate to the **terraform** folder `cd terraform`.
+1. Navigate to the **terraform** folder `cd oci-ods-orm/terraform`.
 1. Open file **terraform.tfvars** and edit the following sections:
     * **TF Requirements** : Add your OCI user and tenant details:
         ```terraform
