@@ -176,7 +176,7 @@ Below is a list of all artifacts that will be provisioned:
            ods_root_policy_name= "DataScienceRootPolicies"
         ```
 1. Initialize terraform provider `terraform init`.
-1. Plan terraform scripts `terraform plan -auto-approve`.
+1. Plan terraform scripts `terraform plan`.
 1. Run terraform scripts `terraform apply -auto-approve`.
 1. To Destroy all created artifacts `terraform destroy -auto-approve`.
 
