@@ -1,0 +1,242 @@
+# Title shown in Application Information tab.
+title: "ODS Resource Manager Stack"
+# Sub Title shown in Application Information tab.
+description: "ODS Resource Manager Stack"
+schemaVersion: 1.1.0
+version: "1.0"
+locale: "en"
+variableGroups:
+  - title: "Provision in"
+    variables:
+      - ${region}
+      - ${compartment_ocid}
+  - title: "ODS Configuration"
+    variables:
+      - ${enable_ods}
+      - ${ods_project_name}
+      - ${ods_notebook_name}
+      - ${ods_compute_shape}
+      - ${ods_storage_size}
+      - ${ods_number_of_notebooks}
+      - ${functions_enabled}
+  - title: "Network Configuration"
+    variables:
+      - ${ods_vcn_use_existing}
+      - ${ods_vcn_existing}
+      - ${ods_vcn_name}
+      - ${ods_vcn_cidr}
+      - ${ods_subnet_public_existing}
+      - ${ods_subnet_public_name}
+      - ${ods_subnet_public_cidr}
+      - ${ods_subnet_private_existing}
+      - ${ods_subnet_private_name}
+      - ${ods_subnet_private_cidr}
+  - title: "Functions/API Gateway Configuration"
+    variables:
+      - ${enable_functions_apigateway}
+      - ${functions_app_name}
+      - ${apigateway_name}
+  - title: "IAM Groups/Policies Configuration"
+    variables:
+      - ${ods_group_name}
+      - ${ods_dynamic_group_name}
+      - ${ods_policy_name}
+      - ${ods_root_policy_name}
+
+variables:
+  enable_ods:
+    type: boolean
+    title: "Provision ODS?"
+    description: "If not enabled Network, Groups and Policies will still be provisioned."
+    required: true
+    default: true
+  ods_compute_shape:
+    type: enum
+    enum:
+      - VM.Standard.E2.2
+      - VM.Standard.E2.4
+      - VM.Standard.E2.8
+      - VM.Standard2.1
+      - VM.Standard2.2
+      - VM.Standard2.4
+      - VM.Standard2.8
+      - VM.Standard2.16
+      - VM.Standard2.24
+    title: "ODS Notebook Compute Shape"
+    required: true
+    default: "VM.Standard2.1"
+    visible: ${enable_ods}
+  ods_storage_size:
+    type: integer
+    required: true
+    title: "ODS Notebook Storage Size"
+    description: "The size must be between 50 GB and 1,024 GB (1 TB)"
+    minimum: 50
+    maximum: 1024
+    default: 50
+    visible: ${enable_ods}
+  ods_number_of_notebooks:
+    type: integer
+    required: true
+    title: "How many Notebooks would you like to create?"
+    minimum: 1
+    default: 1
+    visible: ${enable_ods}
+  ods_project_name:
+    type: string
+    title: "ODS Project Name"
+    description: "The name of the ODS project to provision"
+    required: true
+    default: "Data Science Project"
+    visible: ${enable_ods}
+  ods_notebook_name:
+    type: string
+    title: "ODS Notebook Session Name"
+    description: "The name of the ODS Notebook to provision"
+    required: true
+    default: "Data Science Notebook"
+    visible: ${enable_ods}
+  region:
+    type: oci:identity:region:name
+    required: true
+    visible: true
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    title: "Compartment"
+    visible: true
+  tenancy_ocid:
+    type: string
+    required: true
+    visible: false
+  ods_vcn_use_existing:
+    type: boolean
+    title: "Use Existing VCN?"
+    required: true
+    default: false
+  ods_vcn_existing:
+    type: oci:core:vcn:id
+    title: "Select VCN"
+    required: ${ods_vcn_use_existing}
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    visible: ${ods_vcn_use_existing}
+  ods_subnet_public_existing:
+    type: oci:core:subnet:id
+    title: "Select Your Public VCN"
+    description: "Hosts the API Gateway"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      vcnId: ${ods_vcn_existing}
+      hidePrivateSubnet: true
+    required: ${ods_vcn_use_existing}
+    visible: ${ods_vcn_use_existing}
+  ods_subnet_private_existing:
+    type: oci:core:subnet:id
+    title: "Select Your Private VCN"
+    description: "Hosts ODS Project, Notebooks and functions Application."
+    required: ${ods_vcn_use_existing}
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      vcnId: ${ods_vcn_existing}
+      hidePublicSubnet: true
+    visible: ${ods_vcn_use_existing}
+  ods_vcn_name:
+    type: string
+    title: "VCN Name"
+    required: true
+    default: "Data Science VCN"
+    visible:
+      not:
+        - ${ods_vcn_use_existing}
+  ods_vcn_cidr:
+    type: string
+    title: "VCN CIDR Space"
+    required: true
+    default: "10.0.0.0/16"
+    visible:
+      not:
+        - ${ods_vcn_use_existing}
+  ods_subnet_public_name:
+    type: string
+    title: "Public Subnet Name"
+    description: "Hosts the API Gateway"
+    required: true
+    default: "Data Science - Public"
+    visible:
+      not:
+        - ${ods_vcn_use_existing}
+  ods_subnet_public_cidr:
+    type: string
+    title: "Public Subnet CIDR Space"
+    required: true
+    default: "10.0.0.0/24"
+    visible:
+      not:
+        - ${ods_vcn_use_existing}
+  ods_subnet_private_name:
+    type: string
+    title: "Private Subnet Name"
+    description: "Hosts ODS Project, Notebooks and functions Application."
+    required: true
+    default: "Data Science - Private"
+    visible:
+      not:
+        - ${ods_vcn_use_existing}
+  ods_subnet_private_cidr:
+    type: string
+    title: "Private Subnet CIDR Space"
+    required: true
+    default: "10.0.1.0/24"
+    visible:
+      not:
+        - ${ods_vcn_use_existing}
+  enable_functions_apigateway:
+    type: boolean
+    title: "Provision Functions and API Gateway?"
+    description: "Provision Function and API Gateway"
+    required: true
+    default: false
+  functions_app_name:
+    type: string
+    title: "Application Name"
+    description: "The name of the Functions Application to provision (no spaces)."
+    required: true
+    default: "DataScienceApp"
+    pattern: "^[a-zA-Z0-9]+$"
+    visible: ${enable_functions_apigateway}
+  apigateway_name:
+    type: string
+    title: "API Gateway Name"
+    description: "The name of the API Gateway to provision."
+    required: true
+    default: "Data Science Gateway"
+    visible: ${enable_functions_apigateway}
+  ods_group_name:
+    type: string
+    title: "Group Name"
+    description: "The Name of the IAM group to grant all security policies for (no spaces)."
+    required: true
+    default: "DataScienceGroup"
+    pattern: "^[a-zA-Z0-9]+$"
+  ods_dynamic_group_name:
+    type: string
+    title: "Dynamic Group Name"
+    description: "The Name of the IAM dynamic group to grant (Functions and API Gateway) access to OCI artifacts (no spaces)."
+    required: true
+    default: "DataScienceDynamicGroup"
+    pattern: "^[a-zA-Z0-9]+$"
+  ods_policy_name:
+    type: string
+    title: "Policy Name"
+    description: "The Name of the IAM policy at compartment level (no spaces)."
+    required: true
+    default: "DataSciencePolicies"
+    pattern: "^[a-zA-Z0-9]+$"
+  ods_root_policy_name:
+    type: string
+    title: "Root Policy Name"
+    description: "The Name of the IAM policy at tenancy level (no spaces)."
+    required: true
+    default: "DataScienceRootPolicies"
+    pattern: "^[a-zA-Z0-9]+$"
