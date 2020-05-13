@@ -114,7 +114,7 @@ Below is a list of all artifacts that will be provisioned:
            //    - VM.Standard2.24
            // VM Shapes Specs details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#virtualmachines
            ods_compute_shape="VM.Standard2.1"
-           // Notebook sotrage size in GB, minimum is 50 and maximum is 1024 (1TB)
+           // Notebook storage size in GB, minimum is 50 and maximum is 1024 (1TB)
            ods_storage_size="50"
            // Number of Notebooks to provision, default is 1.
            ods_number_of_notebooks=1
