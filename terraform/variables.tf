@@ -1,26 +1,37 @@
 # Copyright (c) 2020 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
-#  
+#
 
 #*************************************
 #           ODS Specific
 #*************************************
 
-variable "ods_project_name" {}
-variable "ods_notebook_name" {}
-variable "ods_compute_shape" {}
-variable "ods_storage_size" {}
-variable "ods_number_of_notebooks" {}
+variable "ods_project_name" {
+  default = "Data Science Project"
+}
+variable "ods_notebook_name" {
+  default = "Data Science Notebook"
+}
+variable "ods_compute_shape" {
+  default = "VM.Standard2.1"
+}
+variable "ods_storage_size" {
+  default = 50
+}
+variable "ods_number_of_notebooks" {
+  default = 1
+}
 variable "enable_ods" {
   type = bool
+  default = true
 }
 
 #*************************************
 #    Functions/API Gateway Specific
 #*************************************
-
 variable "enable_functions_apigateway" {
   type = bool
+  default = false
 }
 variable "functions_app_name" {
   default = "DataScienceApp"
@@ -84,18 +95,24 @@ variable "ods_root_policy_name" {
 #*************************************
 #           TF Requirements
 #*************************************
-
 variable "tenancy_ocid" {
+  default = ""
 }
 variable "region" {
+  default = ""
 }
 variable "user_ocid" {
+  default = ""
 }
 variable "private_key_path"{
+  default = ""
 }
 variable "fingerprint"{
+  default = ""
 }
-variable "compartment_ocid" {}
+variable "compartment_ocid" {
+  default = ""
+}
 
 #*************************************
 #        Local Variables
@@ -128,4 +145,10 @@ data "oci_identity_regions" "current_region" {
 data "oci_identity_compartment" "current_compartment" {
   #Required
   id = var.compartment_ocid
+}
+
+
+data "oci_datascience_notebook_session_shapes" "test_notebook_session_shapes" {
+  #Required
+  compartment_id = var.compartment_ocid
 }

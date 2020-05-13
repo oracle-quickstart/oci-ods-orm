@@ -6,19 +6,26 @@ schemaVersion: 1.1.0
 version: "1.0"
 locale: "en"
 variableGroups:
+  - title: "Hidden"
+    variables:
+      - compartment_ocid
+      - tenancy_ocid
+      - user_ocid
+      - region
+      - fingerprint
+      - private_key_path
+    visible: false
   - title: "Provision in"
     variables:
       - ${region}
       - ${compartment_ocid}
-  - title: "ODS Configuration"
+    visible: false
+  - title: "IAM Groups/Policies Configuration"
     variables:
-      - ${enable_ods}
-      - ${ods_project_name}
-      - ${ods_notebook_name}
-      - ${ods_compute_shape}
-      - ${ods_storage_size}
-      - ${ods_number_of_notebooks}
-      - ${functions_enabled}
+      - ${ods_group_name}
+      - ${ods_dynamic_group_name}
+      - ${ods_policy_name}
+      - ${ods_root_policy_name}
   - title: "Network Configuration"
     variables:
       - ${ods_vcn_use_existing}
@@ -31,17 +38,21 @@ variableGroups:
       - ${ods_subnet_private_existing}
       - ${ods_subnet_private_name}
       - ${ods_subnet_private_cidr}
+  - title: "ODS Configuration"
+    variables:
+      - ${enable_ods}
+      - ${ods_project_name}
+      - ${ods_notebook_name}
+      - ${ods_compute_shape}
+      - ${ods_storage_size}
+      - ${ods_number_of_notebooks}
+      - ${functions_enabled}
   - title: "Functions/API Gateway Configuration"
     variables:
       - ${enable_functions_apigateway}
       - ${functions_app_name}
       - ${apigateway_name}
-  - title: "IAM Groups/Policies Configuration"
-    variables:
-      - ${ods_group_name}
-      - ${ods_dynamic_group_name}
-      - ${ods_policy_name}
-      - ${ods_root_policy_name}
+
 
 variables:
   enable_ods:

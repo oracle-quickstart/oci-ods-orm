@@ -6,7 +6,7 @@
 #           ODS Specific
 #*************************************
 // Provision ODS Project and Notebook
-enable_ods=false
+enable_ods=true
 // ODS Default Project Name
 ods_project_name= "Data Science Project"
 // ODS Notebook Name
