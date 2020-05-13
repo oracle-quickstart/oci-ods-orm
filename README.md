@@ -27,9 +27,9 @@ Below is a list of all artifacts that will be provisioned:
 ## Using Oracle Resource Manager (ORM)
 
 1. clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. zip the content of the `oci-ods-orm/ORM` folder.
+1. Download [`oci-ods-orm-v1.0.0.zip`](../../releases/download/v1.0.0/oci-ods-orm-v1.0.0.zip) file
 1. From OCI **Console/Resource Manager**, create a new stack.
-1. Make sure you select **My Configurations** and then upload the zip file created in the previous step.
+1. Make sure you select **My Configurations** and then upload the zip file downloaded in the previous step.
 1. Set a name for the stack and click Next.
 1. Set the required variables values and then Create.
     ![create stack](docs/create_stack.gif)
@@ -45,9 +45,13 @@ Below is a list of all artifacts that will be provisioned:
     
 ### Understanding Provisioning Options
 
-* Select in which region and compartment to provision all the artifacts in.
+* **IAM Groups/Policies** change default names of Groups and Policies to be created.
 
-    ![plan](docs/orm_provision_in.png)
+    ![IAM Configs](docs/orm_iam.png)
+    
+* If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
+
+    ![Network Configs](docs/orm_network.png)
     
 * If **Provision ODS** is selected, ODS Project and Notebook session will be provisioned, you can change the default values if needed, otherwise no ODS artifacts will be provisioned, _**however**_ all other artifacts (Network, Policies, Function, API Gateway) will be provisioned.
 
@@ -55,23 +59,20 @@ Below is a list of all artifacts that will be provisioned:
     
 * If **Provision Functions and API Gateway** is selected, a **Function** and **API Gateway** will be provisioned. You can change default values if needed. **_Note_** that no **_Function Deployment_** or **_API Gateway Deployment_** will be provisioned.
 
-    ![Network Configs](docs/orm_functions_apigateway.png)
-    
-* If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
+    ![FUNCTIONS Configs](docs/orm_functions_apigateway.png)
 
-    ![Network Configs](docs/orm_network.png)
-    
-* **IAM Groups/Policies** change default names of Groups and Policies to be created.
-
-    ![Network Configs](docs/orm_iam.png)
     
 ## Using Terraform
 
-1. Clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. Navigate to the **terraform** folder `cd oci-ods-orm/terraform`.
-1. Open file **terraform.tfvars** and edit the following sections:
+1. Clone repo 
+   ```
+   git clone git@github.com:oracle-quickstart/oci-ods-orm.git
+   cd oci-ods-orm/terraform
+   ```
+1. Create a copy of the file **oci-ods-orm/terraform/terraform.tfvars.example** in the same directory and name it **terraform.tfvars**.
+1. Open the newly created **oci-ods-orm/terraform/terraform.tfvars** file and edit the following sections:
     * **TF Requirements** : Add your OCI user and tenant details:
-        ```terraform
+        ```
            #*************************************
            #           TF Requirements
            #*************************************
@@ -91,7 +92,7 @@ Below is a list of all artifacts that will be provisioned:
         ```
 
     * **ODS Requirements** : Check Default values for ODS artifacts and change them if needed
-        ```terraform
+        ```
            #*************************************
            #           ODS Specific
            #*************************************
@@ -119,7 +120,7 @@ Below is a list of all artifacts that will be provisioned:
            ods_number_of_notebooks=1
         ``` 
     * **Network Requirements**: Check default values for Network artifacts and change them if needed
-        ```terraform
+        ```
             #*************************************
             #         Network Specific
             #*************************************
@@ -148,7 +149,7 @@ Below is a list of all artifacts that will be provisioned:
             ods_subnet_private_existing = ""
         ```
     *  **Functions/API Gateway Requirements**: Check default values for Functions/API Gateway artifacts and change them if needed
-        ```terraform
+        ```
            #*************************************
            #    Functions/API Gateway Specific
            #*************************************
@@ -161,7 +162,7 @@ Below is a list of all artifacts that will be provisioned:
            apigateway_name="Data Science Gateway"       
         ``` 
     *  **IAM Requirements**: Check default values for IAM artifacts and change them if needed
-        ```terraform
+        ```
            #*************************************
            #          IAM Specific
            #*************************************
@@ -175,10 +176,49 @@ Below is a list of all artifacts that will be provisioned:
            // ODS IAM Root Policy Name (no spaces)
            ods_root_policy_name= "DataScienceRootPolicies"
         ```
-1. Initialize terraform provider `terraform init`.
-1. Plan terraform scripts `terraform plan`.
-1. Run terraform scripts `terraform apply -auto-approve`.
-1. To Destroy all created artifacts `terraform destroy -auto-approve`.
+1. Open file **oci-ods-orm/terraform/provider.tf** and uncomment the (user_id , fingerprint, private_key_path) in the **_two_** providers (**Default Provider** and **Home Provider**)
+    ```
+        // Default Provider
+        provider "oci" {
+          region = var.region
+          tenancy_ocid = var.tenancy_ocid
+          ###### Uncomment the below if running locally using terraform and as OCI Resource Manager stack #####
+        //  user_ocid = var.user_ocid
+        //  fingerprint = var.fingerprint
+        //  private_key_path = var.private_key_path
+          
+        }
+        
+        
+        
+        // Home Provider
+        provider "oci" {
+          alias            = "home"
+          region           = lookup(data.oci_identity_regions.home-region.regions[0], "name")
+          tenancy_ocid = var.tenancy_ocid
+          ###### Uncomment the below if running locally using terraform and as OCI Resource Manager stack #####
+        //  user_ocid = var.user_ocid
+        //  fingerprint = var.fingerprint
+        //  private_key_path = var.private_key_path
+        
+        }
+    ```
+1. Initialize terraform provider 
+    ```
+    $ terraform init
+   ```
+1. Plan terraform scripts 
+    ```
+    $ terraform plan
+   ```
+1. Run terraform scripts 
+    ```
+    $ terraform apply -auto-approve
+   ```
+1. To Destroy all created artifacts 
+    ```
+    $ terraform destroy -auto-approve
+   ```
 
 ## Contributing
 
