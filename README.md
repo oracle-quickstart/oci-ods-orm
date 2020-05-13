@@ -45,9 +45,13 @@ Below is a list of all artifacts that will be provisioned:
     
 ### Understanding Provisioning Options
 
-* Select in which region and compartment to provision all the artifacts in.
+* **IAM Groups/Policies** change default names of Groups and Policies to be created.
 
-    ![plan](docs/orm_provision_in.png)
+    ![IAM Configs](docs/orm_iam.png)
+    
+* If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
+
+    ![Network Configs](docs/orm_network.png)
     
 * If **Provision ODS** is selected, ODS Project and Notebook session will be provisioned, you can change the default values if needed, otherwise no ODS artifacts will be provisioned, _**however**_ all other artifacts (Network, Policies, Function, API Gateway) will be provisioned.
 
@@ -55,15 +59,8 @@ Below is a list of all artifacts that will be provisioned:
     
 * If **Provision Functions and API Gateway** is selected, a **Function** and **API Gateway** will be provisioned. You can change default values if needed. **_Note_** that no **_Function Deployment_** or **_API Gateway Deployment_** will be provisioned.
 
-    ![Network Configs](docs/orm_functions_apigateway.png)
-    
-* If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
+    ![FUNCTIONS Configs](docs/orm_functions_apigateway.png)
 
-    ![Network Configs](docs/orm_network.png)
-    
-* **IAM Groups/Policies** change default names of Groups and Policies to be created.
-
-    ![Network Configs](docs/orm_iam.png)
     
 ## Using Terraform
 
