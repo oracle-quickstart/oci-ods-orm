@@ -26,6 +26,7 @@ variableGroups:
       - ${ods_dynamic_group_name}
       - ${ods_policy_name}
       - ${ods_root_policy_name}
+      - ${enable_vault_policies}
   - title: "Network Configuration"
     variables:
       - ${ods_vcn_use_existing}
@@ -207,7 +208,7 @@ variables:
     title: "Provision Functions and API Gateway?"
     description: "Provision Function and API Gateway"
     required: true
-    default: false
+    default: true
   functions_app_name:
     type: string
     title: "Application Name"
@@ -251,3 +252,9 @@ variables:
     required: true
     default: "DataScienceRootPolicies"
     pattern: "^[a-zA-Z0-9]+$"
+  enable_vault_policies:
+    type: boolean
+    title: "Enable Vault Support ?"
+    description: "Ability to store secrets and keys in secure storage"
+    required: true
+    default: true

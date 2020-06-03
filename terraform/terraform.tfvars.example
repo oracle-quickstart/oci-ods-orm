@@ -33,7 +33,7 @@ ods_number_of_notebooks=1
 #*************************************
 
 // Provision Functions Application and its associated API Gateway
-enable_functions_apigateway=false
+enable_functions_apigateway=true
 // Name of the "Functions Application", no spaces are allowed
 functions_app_name="DataScienceApp"
 // Name of the "API Gateway"
@@ -78,6 +78,8 @@ ods_dynamic_group_name= "DataScienceDynamicGroup"
 ods_policy_name= "DataSciencePolicies"
 // ODS IAM Root Policy Name (no spaces)
 ods_root_policy_name= "DataScienceRootPolicies"
+// If enabled, the needed OCI policies to manage "OCI Vault service" will be created
+enable_vault_policies= true
 
 #*************************************
 #           TF Requirements

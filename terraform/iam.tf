@@ -28,13 +28,13 @@ resource "oci_identity_dynamic_group" "ods-dynamic-group" {
 #*************************************
 #           Policies
 #*************************************
-
-resource "oci_identity_policy" "ods-policy" {
-  provider = oci.home
-  compartment_id = var.compartment_ocid
-  description = "Data Science Policies"
-  name = var.ods_policy_name
-  statements = [
+locals {
+  vault_policies = [
+    "Allow group ${oci_identity_group.ods-group.name} to manage vaults ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }",
+    "Allow group ${oci_identity_group.ods-group.name} to manage keys ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }",
+    "Allow group ${oci_identity_group.ods-group.name} to manage secret-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }"
+  ]
+  ods_policies = [
     "Allow group ${oci_identity_group.ods-group.name} to manage data-science-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
     "Allow group ${oci_identity_group.ods-group.name} to use virtual-network-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
     "Allow group ${oci_identity_group.ods-group.name} to manage functions-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
@@ -43,9 +43,15 @@ resource "oci_identity_policy" "ods-policy" {
     "Allow service FaaS to use virtual-network-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to use virtual-network-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to use functions-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
-    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage public-ips ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
-
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage public-ips ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }"
   ]
+}
+resource "oci_identity_policy" "ods-policy" {
+  provider = oci.home
+  compartment_id = var.compartment_ocid
+  description = "Data Science Policies"
+  name = var.ods_policy_name
+  statements = var.enable_vault_policies ? concat(local.ods_policies , local.vault_policies) : local.ods_policies
 }
 
 resource "oci_identity_policy" "ods-root-policy" {

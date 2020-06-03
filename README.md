@@ -10,8 +10,8 @@ Below is a list of all artifacts that will be provisioned:
 |--------------|-------------------------------------|-------------------------|----------|--------------------|-----------------------------|-----------|
 | [ODS Project](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-projects.htm)  | Oracle OCI Data Science Project     | Data Science Project    | True     | True               | 1                           | -
 | [ODS Notebook](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm) | Oracle OCI Data Science Notebook(s) | Data Science Notebook-x | True     | True               | 1  or more                  | You can provision more than one notebook, and each notebook will be prefixed with an index (x) starting from (0) 
-| [Functions](https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsconcepts.htm)    | Oracle OCI Function Application     | DataScienceApp          | True     | False              | 1                           | Only OCI **Functions Application** will be provisioned without a **Function deployment**. This is a placeholder application so you can deploy your model application later on.
-| [API Gateway](https://docs.cloud.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayconcepts.htm)  | Oracle OCI API Gateway              | Data Science Gateway    | True     | False              | 1                           | Only OCI **API Gateway** will be provisioned without an **API Gateway deployment**. The gateway is used to expose the OCI Function through a REST interface.
+| [Functions](https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsconcepts.htm)    | Oracle OCI Function Application     | DataScienceApp          | True     | True              | 1                           | Only OCI **Functions Application** will be provisioned without a **Function deployment**. This is a placeholder application so you can deploy your model application later on.
+| [API Gateway](https://docs.cloud.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayconcepts.htm)  | Oracle OCI API Gateway              | Data Science Gateway    | True     | True              | 1                           | Only OCI **API Gateway** will be provisioned without an **API Gateway deployment**. The gateway is used to expose the OCI Function through a REST interface.
 | [VCN](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)          | Oracle OCI VCN                      | Data Science VCN        | True     | True               | 1                           | OCI VCN and all its related artifacts (Subnets, Security Lists, Routing Tables, Internet Gateway, Nat Gateway).
 | [Subnets](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)      | Oracle OCI VCN Subnets              | Data Science - Public/Private | True | True             | 2                           | One **Public Subnet** with its Security List and Routing Table and configured with an Internet Gateway (Hosts API Gateway). One **Private Subnet** and its Security List and Routing Table and configured with a NAT Gateway and hosts (ODS Project, ODS Notebooks, Function)
 | [Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm)        | Oracle OCI Users Group              | DataScienceGroup        | False    | True               | 1                           | All Policies are granted to this group, you can add users to this group to grant me access to ODS services.
@@ -155,7 +155,7 @@ Below is a list of all artifacts that will be provisioned:
            #*************************************
            
            // Provision Functions Application and its associated API Gateway
-           enable_functions_apigateway=false
+           enable_functions_apigateway=true
            // Name of the "Functions Application", no spaces are allowed
            functions_app_name="DataScienceApp"
            // Name of the "API Gateway"
@@ -175,6 +175,8 @@ Below is a list of all artifacts that will be provisioned:
            ods_policy_name= "DataSciencePolicies"
            // ODS IAM Root Policy Name (no spaces)
            ods_root_policy_name= "DataScienceRootPolicies"
+           // If enabled, the needed OCI policies to manage "OCI Vault service" will be created 
+           enable_vault_policies= true
         ```
 1. Open file **oci-ods-orm/terraform/provider.tf** and uncomment the (user_id , fingerprint, private_key_path) in the **_two_** providers (**Default Provider** and **Home Provider**)
     ```
@@ -182,7 +184,7 @@ Below is a list of all artifacts that will be provisioned:
         provider "oci" {
           region = var.region
           tenancy_ocid = var.tenancy_ocid
-          ###### Uncomment the below if running locally using terraform and as OCI Resource Manager stack #####
+          ###### Uncomment the below if running locally using terraform and not as OCI Resource Manager stack #####
         //  user_ocid = var.user_ocid
         //  fingerprint = var.fingerprint
         //  private_key_path = var.private_key_path
@@ -196,7 +198,7 @@ Below is a list of all artifacts that will be provisioned:
           alias            = "home"
           region           = lookup(data.oci_identity_regions.home-region.regions[0], "name")
           tenancy_ocid = var.tenancy_ocid
-          ###### Uncomment the below if running locally using terraform and as OCI Resource Manager stack #####
+          ###### Uncomment the below if running locally using terraform and not as OCI Resource Manager stack #####
         //  user_ocid = var.user_ocid
         //  fingerprint = var.fingerprint
         //  private_key_path = var.private_key_path

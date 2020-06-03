@@ -31,7 +31,7 @@ variable "enable_ods" {
 #*************************************
 variable "enable_functions_apigateway" {
   type = bool
-  default = false
+  default = true
 }
 variable "functions_app_name" {
   default = "DataScienceApp"
@@ -90,6 +90,10 @@ variable "ods_policy_name" {
 }
 variable "ods_root_policy_name" {
   default = "DataScienceRootPolicies"
+}
+variable "enable_vault_policies" {
+  type = bool
+  default = true
 }
 
 #*************************************

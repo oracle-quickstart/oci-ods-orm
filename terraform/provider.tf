@@ -10,7 +10,7 @@ terraform {
 provider "oci" {
   region = var.region
   tenancy_ocid = var.tenancy_ocid
-  ###### Uncomment the below if running locally using terraform and as OCI Resource Manager stack #####
+  ###### Uncomment the below if running locally using terraform and not as OCI Resource Manager stack #####
 //  user_ocid = var.user_ocid
 //  fingerprint = var.fingerprint
 //  private_key_path = var.private_key_path
@@ -24,7 +24,7 @@ provider "oci" {
   alias            = "home"
   region           = lookup(data.oci_identity_regions.home-region.regions[0], "name")
   tenancy_ocid = var.tenancy_ocid
-  ###### Uncomment the below if running locally using terraform and as OCI Resource Manager stack #####
+  ###### Uncomment the below if running locally using terraform and as not OCI Resource Manager stack #####
 //  user_ocid = var.user_ocid
 //  fingerprint = var.fingerprint
 //  private_key_path = var.private_key_path
