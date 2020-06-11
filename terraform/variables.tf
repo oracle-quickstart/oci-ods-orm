@@ -91,11 +91,30 @@ variable "ods_policy_name" {
 variable "ods_root_policy_name" {
   default = "DataScienceRootPolicies"
 }
-variable "enable_vault_policies" {
+
+#*************************************
+#          Vault Specific
+#*************************************
+variable "enable_vault" {
   type = bool
   default = true
 }
-
+variable "ods_vault_name" {
+  default = "Data Science Vault"
+}
+variable "ods_vault_type" {
+  default = "DEFAULT"
+}
+variable "enable_create_vault_master_key" {
+  type = bool
+  default = true
+}
+variable "ods_vault_master_key_name" {
+  default = "Data Science Master Key"
+}
+variable "ods_vault_master_key_length" {
+  default = 32
+}
 #*************************************
 #           TF Requirements
 #*************************************
@@ -149,10 +168,4 @@ data "oci_identity_regions" "current_region" {
 data "oci_identity_compartment" "current_compartment" {
   #Required
   id = var.compartment_ocid
-}
-
-
-data "oci_datascience_notebook_session_shapes" "test_notebook_session_shapes" {
-  #Required
-  compartment_id = var.compartment_ocid
 }

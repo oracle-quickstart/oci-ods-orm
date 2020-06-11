@@ -26,7 +26,6 @@ variableGroups:
       - ${ods_dynamic_group_name}
       - ${ods_policy_name}
       - ${ods_root_policy_name}
-      - ${enable_vault_policies}
   - title: "Network Configuration"
     variables:
       - ${ods_vcn_use_existing}
@@ -48,6 +47,14 @@ variableGroups:
       - ${ods_storage_size}
       - ${ods_number_of_notebooks}
       - ${functions_enabled}
+  - title: "Vault Configuration"
+    variables:
+      - ${enable_vault}
+      - ${ods_vault_name}
+      - ${ods_vault_type}
+      - ${enable_create_vault_master_key}
+      - ${ods_vault_master_key_name}
+      - ${ods_vault_master_key_length}
   - title: "Functions/API Gateway Configuration"
     variables:
       - ${enable_functions_apigateway}
@@ -252,9 +259,52 @@ variables:
     required: true
     default: "DataScienceRootPolicies"
     pattern: "^[a-zA-Z0-9]+$"
-  enable_vault_policies:
+  enable_vault:
     type: boolean
     title: "Enable Vault Support ?"
     description: "Ability to store secrets and keys in secure storage"
     required: true
     default: true
+  ods_vault_name:
+    type: string
+    title: "The Name of the OCI Vault to provision"
+    default: "Data Science Vault"
+    required: true
+    visible: ${enable_vault}
+  ods_vault_type:
+    type: enum
+    title: "Vault Type"
+    default: "DEFAULT"
+    required: true
+    visible: ${enable_vault}
+    enum:
+      - DEFAULT
+      - VIRTUAL
+  enable_create_vault_master_key:
+    type: boolean
+    title: "Create Vault Master Key?"
+    required: true
+    default: true
+    visible: ${enable_vault}
+  ods_vault_master_key_name:
+    type: string
+    title: "Vault Master Key Name to provision"
+    default: "Data Science Master Key"
+    required: true
+    visible:
+      and:
+        - ${enable_vault}
+        - ${enable_create_vault_master_key}
+  ods_vault_master_key_length:
+    type: enum
+    title: "Vault Master Key Length"
+    default: 32
+    required: true
+    visible:
+      and:
+      - ${enable_vault}
+      - ${enable_create_vault_master_key}
+    enum:
+      - 16
+      - 24
+      - 32

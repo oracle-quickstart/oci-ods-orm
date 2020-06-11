@@ -12,6 +12,8 @@ Below is a list of all artifacts that will be provisioned:
 | [ODS Notebook](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm) | Oracle OCI Data Science Notebook(s) | Data Science Notebook-x | True     | True               | 1  or more                  | You can provision more than one notebook, and each notebook will be prefixed with an index (x) starting from (0) 
 | [Functions](https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsconcepts.htm)    | Oracle OCI Function Application     | DataScienceApp          | True     | True              | 1                           | Only OCI **Functions Application** will be provisioned without a **Function deployment**. This is a placeholder application so you can deploy your model application later on.
 | [API Gateway](https://docs.cloud.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayconcepts.htm)  | Oracle OCI API Gateway              | Data Science Gateway    | True     | True              | 1                           | Only OCI **API Gateway** will be provisioned without an **API Gateway deployment**. The gateway is used to expose the OCI Function through a REST interface.
+| [Vault](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm)            | Oracle OCI Vault                        | Data Science Vault      | True     | True             | 1                          | OCI Vault can be used to store credentials rather than storing them in ODS Notebook.
+| [Vault Master Key](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm) | Oracle OCI Vault Master Key             | Data Science Vault Master Key  | True     | True             | 1                   | OCI Vault Master Key can be used encrypt/decrypt credentials for secured access.                             
 | [VCN](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)          | Oracle OCI VCN                      | Data Science VCN        | True     | True               | 1                           | OCI VCN and all its related artifacts (Subnets, Security Lists, Routing Tables, Internet Gateway, Nat Gateway).
 | [Subnets](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)      | Oracle OCI VCN Subnets              | Data Science - Public/Private | True | True             | 2                           | One **Public Subnet** with its Security List and Routing Table and configured with an Internet Gateway (Hosts API Gateway). One **Private Subnet** and its Security List and Routing Table and configured with a NAT Gateway and hosts (ODS Project, ODS Notebooks, Function)
 | [Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm)        | Oracle OCI Users Group              | DataScienceGroup        | False    | True               | 1                           | All Policies are granted to this group, you can add users to this group to grant me access to ODS services.
@@ -27,7 +29,7 @@ Below is a list of all artifacts that will be provisioned:
 ## Using Oracle Resource Manager (ORM)
 
 1. clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. Download [`oci-ods-orm-v1.0.1.zip`](../../releases/download/v1.0.1/oci-ods-orm-v1.0.1.zip) file
+1. Download [`oci-ods-orm-v1.0.2.zip`](../../releases/download/v1.0.2/oci-ods-orm-v1.0.2.zip) file
 1. From OCI **Console/Resource Manager**, create a new stack.
 1. Make sure you select **My Configurations** and then upload the zip file downloaded in the previous step.
 1. Set a name for the stack and click Next.
@@ -56,6 +58,10 @@ Below is a list of all artifacts that will be provisioned:
 * If **Provision ODS** is selected, ODS Project and Notebook session will be provisioned, you can change the default values if needed, otherwise no ODS artifacts will be provisioned, _**however**_ all other artifacts (Network, Policies, Function, API Gateway) will be provisioned.
 
     ![ODS Configs](docs/orm_ods.png)
+    
+* If **Enable Vault Support** is selected, OCI Vault along with all required IAM policies will be provisioned, you can change the default values if needed, otherwise OCI Vault will not be provisioned.
+
+    ![Vault Configs](docs/orm_vault.png)
     
 * If **Provision Functions and API Gateway** is selected, a **Function** and **API Gateway** will be provisioned. You can change default values if needed. **_Note_** that no **_Function Deployment_** or **_API Gateway Deployment_** will be provisioned.
 
@@ -178,6 +184,24 @@ Below is a list of all artifacts that will be provisioned:
            // If enabled, the needed OCI policies to manage "OCI Vault service" will be created 
            enable_vault_policies= true
         ```
+    * **Vault Specific**: check default values for OCI Vault and change them if needed
+        ```
+          #*************************************
+          #          Vault Specific
+          #*************************************
+          // If enabled, an OCI Vault along with the needed OCI policies to manage "Vault service" will be created
+          enable_vault= true
+          // ODS Vault Name
+          ods_vault_name= "Data Science Vault"
+          // ODS Vault Type, allowed values (VIRTUAL, DEFAULT)
+          ods_vault_type = "DEFAULT"
+          // If enabled, a Vault Master Key will be created.
+          enable_create_vault_master_key = true
+          // ODS Vault Master Key Name
+          ods_vault_master_key_name = "Data Science Master Key"
+          // ODS Vault Master Key length, allowed values (16, 24, 32)
+          ods_vault_master_key_length = 32
+        ```   
 1. Open file **oci-ods-orm/terraform/provider.tf** and uncomment the (user_id , fingerprint, private_key_path) in the **_two_** providers (**Default Provider** and **Home Provider**)
     ```
         // Default Provider

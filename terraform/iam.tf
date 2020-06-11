@@ -51,7 +51,7 @@ resource "oci_identity_policy" "ods-policy" {
   compartment_id = var.compartment_ocid
   description = "Data Science Policies"
   name = var.ods_policy_name
-  statements = var.enable_vault_policies ? concat(local.ods_policies , local.vault_policies) : local.ods_policies
+  statements = var.enable_vault ? concat(local.ods_policies , local.vault_policies) : local.ods_policies
 }
 
 resource "oci_identity_policy" "ods-root-policy" {
@@ -63,4 +63,29 @@ resource "oci_identity_policy" "ods-root-policy" {
     "Allow service FaaS to read repos in tenancy",
     "Allow group ${oci_identity_group.ods-group.name} to manage repos in tenancy"
   ]
+}
+
+#*************************************
+#             Vault
+#*************************************
+
+resource "oci_kms_vault" "ods-vault" {
+  count = var.enable_vault ? 1 : 0
+  #Required
+  compartment_id = var.compartment_ocid
+  display_name = var.ods_vault_name
+  vault_type = var.ods_vault_type
+}
+
+resource "oci_kms_key" "ods-key" {
+  count = var.enable_vault ? var.enable_create_vault_master_key ? 1 : 0 : 0
+  #Required
+  compartment_id = var.compartment_ocid
+  display_name = var.ods_vault_master_key_name
+  key_shape {
+    #Required
+    algorithm = "AES"
+    length = var.ods_vault_master_key_length
+  }
+  management_endpoint = oci_kms_vault.ods-vault[0].management_endpoint
 }
