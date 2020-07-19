@@ -1,25 +1,25 @@
-# Provision Oracle Data Science (**_ODS_**) Using OCI Resource Manager and Terraform
+# Provision Oracle Data Science (**_ODS_**) Using Oracle Cloud Infrastructure Resource Manager and Terraform
 
 ## Introduction
 
-This solution allows you to provision [Oracle Data Science (**_ODS_**)](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/data-science.htm) and all its related artifacts using [Terraform](https://www.terraform.io/docs/providers/oci/index.html) and [Oracle OCI Resource Manager](https://docs.cloud.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm).
+This solution allows you to provision [Oracle Data Science (**_ODS_**)](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/data-science.htm) and all its related artifacts using [Terraform](https://www.terraform.io/docs/providers/oci/index.html) and [Oracle Cloud Infrastructure Resource Manager](https://docs.cloud.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm).
 
 Below is a list of all artifacts that will be provisioned:
 
 | Component    | Description                         | Default Name            | Optional | Enabled By Default | Number of Items Provisioned | Notes
 |--------------|-------------------------------------|-------------------------|----------|--------------------|-----------------------------|-----------|
-| [ODS Project](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-projects.htm)  | Oracle OCI Data Science Project     | Data Science Project    | True     | True               | 1                           | -
-| [ODS Notebook](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm) | Oracle OCI Data Science Notebook(s) | Data Science Notebook-x | True     | True               | 1  or more                  | You can provision more than one notebook, and each notebook will be prefixed with an index (x) starting from (0) 
-| [Functions](https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsconcepts.htm)    | Oracle OCI Function Application     | DataScienceApp          | True     | True              | 1                           | Only OCI **Functions Application** will be provisioned without a **Function deployment**. This is a placeholder application so you can deploy your model application later on.
-| [API Gateway](https://docs.cloud.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayconcepts.htm)  | Oracle OCI API Gateway              | Data Science Gateway    | True     | True              | 1                           | Only OCI **API Gateway** will be provisioned without an **API Gateway deployment**. The gateway is used to expose the OCI Function through a REST interface.
-| [Vault](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm)            | Oracle OCI Vault                        | Data Science Vault      | True     | True             | 1                          | OCI Vault can be used to store credentials rather than storing them in ODS Notebook.
-| [Vault Master Key](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm) | Oracle OCI Vault Master Key             | Data Science Vault Master Key  | True     | True             | 1                   | OCI Vault Master Key can be used encrypt/decrypt credentials for secured access.                             
-| [VCN](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)          | Oracle OCI VCN                      | Data Science VCN        | True     | True               | 1                           | OCI VCN and all its related artifacts (Subnets, Security Lists, Routing Tables, Internet Gateway, Nat Gateway).
-| [Subnets](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)      | Oracle OCI VCN Subnets              | Data Science - Public/Private | True | True             | 2                           | One **Public Subnet** with its Security List and Routing Table and configured with an Internet Gateway (Hosts API Gateway). One **Private Subnet** and its Security List and Routing Table and configured with a NAT Gateway and hosts (ODS Project, ODS Notebooks, Function)
-| [Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm)        | Oracle OCI Users Group              | DataScienceGroup        | False    | True               | 1                           | All Policies are granted to this group, you can add users to this group to grant me access to ODS services.
-| [Dynamic Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) | Oracle OCI Dynamic Group           | DataScienceDynamicGroup | False    | True               | 1                           | Dynamic Group for Functions and API Gateway.
-| [Policies (compartment)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)   | Oracle OCI Security Policies        | DataSciencePolicies    | False              | True   | 1                  | A policy at the compartment level to grant access to ODS, VCN, Functions and API Gateway
-| [Policies (root)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)    | Oracle OCI Security Policies        | DataScienceRootPolicies      | False              | True    | 1                 | A policy at the root compartment level to grant access to OCIR in tenancy. 
+| [ODS Project](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-projects.htm)  | Oracle Cloud Infrastructure Data Science Project     | Data Science Project    | True     | True               | 1                           | -
+| [ODS Notebook](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm) | Oracle Cloud Infrastructure Data Science Notebook(s) | Data Science Notebook-x | True     | True               | 1  or more                  | You can provision more than one notebook, and each notebook will be prefixed with an index (x) starting from (0) 
+| [Functions](https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsconcepts.htm)    | Oracle Cloud Infrastructure Function Application     | DataScienceApp          | True     | True              | 1                           | Only Oracle Cloud Infrastructure **Functions Application** will be provisioned without a **Function deployment**. This is a placeholder application so you can deploy your model application later on.
+| [API Gateway](https://docs.cloud.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayconcepts.htm)  | Oracle Cloud Infrastructure API Gateway              | Data Science Gateway    | True     | True              | 1                           | Only Oracle Cloud Infrastructure **API Gateway** will be provisioned without an **API Gateway deployment**. The gateway is used to expose the Oracle Cloud Infrastructure Function through a REST interface.
+| [Vault](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm)            | Oracle Cloud Infrastructure Vault                        | Data Science Vault      | True     | True             | 1                          | Oracle Cloud Infrastructure Vault can be used to store credentials rather than storing them in ODS Notebook.
+| [Vault Master Key](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm) | Oracle Cloud Infrastructure Vault Master Key             | Data Science Vault Master Key  | True     | True             | 1                   | Oracle Cloud Infrastructure Vault Master Key can be used encrypt/decrypt credentials for secured access.                             
+| [VCN](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)          | Oracle Cloud Infrastructure VCN                      | Data Science VCN        | True     | True               | 1                           | Oracle Cloud Infrastructure VCN and all its related artifacts (Subnets, Security Lists, Routing Tables, Internet Gateway, Nat Gateway).
+| [Subnets](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)      | Oracle Cloud Infrastructure VCN Subnets              | Data Science - Public/Private | True | True             | 2                           | One **Public Subnet** with its Security List and Routing Table and configured with an Internet Gateway (Hosts API Gateway). One **Private Subnet** and its Security List and Routing Table and configured with a NAT Gateway and hosts (ODS Project, ODS Notebooks, Function)
+| [Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm)        | Oracle Cloud Infrastructure Users Group              | DataScienceGroup        | False    | True               | 1                           | All Policies are granted to this group, you can add users to this group to grant me access to ODS services.
+| [Dynamic Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) | Oracle Cloud Infrastructure Dynamic Group           | DataScienceDynamicGroup | False    | True               | 1                           | Dynamic Group for Functions and API Gateway.
+| [Policies (compartment)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)   | Oracle Cloud Infrastructure Security Policies        | DataSciencePolicies    | False              | True   | 1                  | A policy at the compartment level to grant access to ODS, VCN, Functions and API Gateway
+| [Policies (root)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)    | Oracle Cloud Infrastructure Security Policies        | DataScienceRootPolicies      | False              | True    | 1                 | A policy at the root compartment level to grant access to OCIR in tenancy. 
 
 ## Prerequisite
 
@@ -30,7 +30,7 @@ Below is a list of all artifacts that will be provisioned:
 
 1. clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
 1. Download [`oci-ods-orm-v1.0.2.zip`](../../releases/download/v1.0.2/oci-ods-orm-v1.0.2.zip) file
-1. From OCI **Console/Resource Manager**, create a new stack.
+1. From Oracle Cloud Infrastructure **Console/Resource Manager**, create a new stack.
 1. Make sure you select **My Configurations** and then upload the zip file downloaded in the previous step.
 1. Set a name for the stack and click Next.
 1. Set the required variables values and then Create.
@@ -59,7 +59,7 @@ Below is a list of all artifacts that will be provisioned:
 
     ![ODS Configs](docs/orm_ods.png)
     
-* If **Enable Vault Support** is selected, OCI Vault along with all required IAM policies will be provisioned, you can change the default values if needed, otherwise OCI Vault will not be provisioned.
+* If **Enable Vault Support** is selected, Oracle Cloud Infrastructure Vault along with all required IAM policies will be provisioned, you can change the default values if needed, otherwise Oracle Cloud Infrastructure Vault will not be provisioned.
 
     ![Vault Configs](docs/orm_vault.png)
     
@@ -77,21 +77,21 @@ Below is a list of all artifacts that will be provisioned:
    ```
 1. Create a copy of the file **oci-ods-orm/terraform/terraform.tfvars.example** in the same directory and name it **terraform.tfvars**.
 1. Open the newly created **oci-ods-orm/terraform/terraform.tfvars** file and edit the following sections:
-    * **TF Requirements** : Add your OCI user and tenant details:
+    * **TF Requirements** : Add your Oracle Cloud Infrastructure user and tenant details:
         ```
            #*************************************
            #           TF Requirements
            #*************************************
            
-           // OCI Region, user "Region Identifier" as documented here https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm
+           // Oracle Cloud Infrastructure Region, user "Region Identifier" as documented here https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm
            region=""
            // The Compartment OCID to provision artificats within
            compartment_ocid=""
-           // OCI User OCID, more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#five
+           // Oracle Cloud Infrastructure User OCID, more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#five
            user_ocid=""
-           // OCI tenant OCID, more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#five
+           // Oracle Cloud Infrastructure tenant OCID, more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#five
            tenancy_ocid=""
-           // Path to private key used to create OCI "API Key", more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/credentials.htm#two
+           // Path to private key used to create Oracle Cloud Infrastructure "API Key", more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/credentials.htm#two
            private_key_path=""
            // "API Key" fingerprint, more details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/credentials.htm#two
            fingerprint=""
@@ -189,7 +189,7 @@ Below is a list of all artifacts that will be provisioned:
           #*************************************
           #          Vault Specific
           #*************************************
-          // If enabled, an OCI Vault along with the needed OCI policies to manage "Vault service" will be created
+          // If enabled, an Oracle Cloud Infrastructure Vault along with the needed  policies to manage "Vault service" will be created
           enable_vault= true
           // ODS Vault Name
           ods_vault_name= "Data Science Vault"
@@ -208,7 +208,7 @@ Below is a list of all artifacts that will be provisioned:
         provider "oci" {
           region = var.region
           tenancy_ocid = var.tenancy_ocid
-          ###### Uncomment the below if running locally using terraform and not as OCI Resource Manager stack #####
+          ###### Uncomment the below if running locally using terraform and not as Oracle Cloud Infrastructure Resource Manager stack #####
         //  user_ocid = var.user_ocid
         //  fingerprint = var.fingerprint
         //  private_key_path = var.private_key_path
@@ -222,7 +222,7 @@ Below is a list of all artifacts that will be provisioned:
           alias            = "home"
           region           = lookup(data.oci_identity_regions.home-region.regions[0], "name")
           tenancy_ocid = var.tenancy_ocid
-          ###### Uncomment the below if running locally using terraform and not as OCI Resource Manager stack #####
+          ###### Uncomment the below if running locally using terraform and not as Oracle Cloud Infrastructure Resource Manager stack #####
         //  user_ocid = var.user_ocid
         //  fingerprint = var.fingerprint
         //  private_key_path = var.private_key_path
