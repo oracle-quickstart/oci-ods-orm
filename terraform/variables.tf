@@ -110,7 +110,7 @@ variable "enable_create_vault_master_key" {
   default = true
 }
 variable "ods_vault_master_key_name" {
-  default = "Data Science Master Key"
+  default = "DataScienceKey"
 }
 variable "ods_vault_master_key_length" {
   default = 32
