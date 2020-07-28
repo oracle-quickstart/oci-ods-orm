@@ -29,7 +29,7 @@ Below is a list of all artifacts that will be provisioned:
 ## Using Oracle Resource Manager (ORM)
 
 1. clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. Download [`oci-ods-orm-v1.0.2.zip`](../../releases/download/v1.0.2/oci-ods-orm-v1.0.2.zip) file
+1. Download [`oci-ods-orm-v1.0.3.zip`](../../releases/download/v1.0.3/oci-ods-orm-v1.0.3.zip) file
 1. From Oracle Cloud Infrastructure **Console/Resource Manager**, create a new stack.
 1. Make sure you select **My Configurations** and then upload the zip file downloaded in the previous step.
 1. Set a name for the stack and click Next.
