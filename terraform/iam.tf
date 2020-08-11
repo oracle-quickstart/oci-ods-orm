@@ -47,9 +47,7 @@ locals {
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage data-science-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage objects ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage dataflow-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }" ,
-    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage public-ips ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }",
-    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to read compartments in tenancy",
-    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to read users in tenancy"
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage public-ips ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}" }"
   ]
 }
 resource "oci_identity_policy" "ods-policy" {
