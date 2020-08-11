@@ -92,7 +92,7 @@ ods_vault_type = "DEFAULT"
 // If enabled, a Vault Master Key will be created.
 enable_create_vault_master_key = true
 // ODS Vault Master Key Name
-ods_vault_master_key_name = "Data Science Master Key"
+ods_vault_master_key_name = "DataScienceKey"
 // ODS Vault Master Key length, allowed values (16, 24, 32)
 ods_vault_master_key_length = 32
 
