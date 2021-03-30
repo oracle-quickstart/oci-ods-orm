@@ -28,7 +28,6 @@ variableGroups:
       - ods_root_policy_name
   - title: "Network Configuration"
     variables:
-      - ${ods_vcn_use_existing}
       - ods_vcn_use_existing
       - ods_vcn_existing
       - ods_vcn_name
@@ -63,7 +62,6 @@ variableGroups:
       - enable_functions_apigateway
       - functions_app_name
       - apigateway_name
-
 
 variables:
   enable_ods:
@@ -270,27 +268,27 @@ variables:
     title: "Select a vault"
     dependsOn:
       compartmentId: ${compartment_ocid}
-    visible: ods_use_existing_vault  
+    visible: ods_use_existing_vault
   ods_vault_name:
     type: string
     title: "Name of the Vault to provision"
     default: "Data Science Vault"
     required: true
-    visible: 
+    visible:
       and:
         - enable_vault
         - not:
-          - ods_use_existing_vault
+            - ods_use_existing_vault
   ods_vault_type:
     type: enum
     title: "Vault Type"
     default: "DEFAULT"
     required: true
-    visible: 
+    visible:
       and:
         - enable_vault
         - not:
-          - ods_use_existing_vault
+            - ods_use_existing_vault
     enum:
       - DEFAULT
       - VIRTUAL
@@ -299,11 +297,11 @@ variables:
     title: "Create a master encryption key in the vault?"
     required: true
     default: true
-    visible: 
+    visible:
       and:
         - enable_vault
         - not:
-          - ods_use_existing_vault
+            - ods_use_existing_vault
   ods_vault_master_key_name:
     type: string
     title: "Name of the master encryption key"
@@ -314,7 +312,7 @@ variables:
         - enable_vault
         - enable_create_vault_master_key
         - not:
-          - ods_use_existing_vault
+            - ods_use_existing_vault
   ods_vault_master_key_length:
     type: enum
     title: "Length of the master encryption key"
@@ -325,7 +323,7 @@ variables:
         - enable_vault
         - enable_create_vault_master_key
         - not:
-          - ods_use_existing_vault
+            - ods_use_existing_vault
     enum:
       - 16
       - 24
