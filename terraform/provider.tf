@@ -3,17 +3,17 @@
 # 
 
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.14"
 }
 
 // Default Provider
 provider "oci" {
-  region = var.region
+  region       = var.region
   tenancy_ocid = var.tenancy_ocid
   ###### Uncomment the below if running locally using terraform and not as OCI Resource Manager stack #####
-//  user_ocid = var.user_ocid
-//  fingerprint = var.fingerprint
-//  private_key_path = var.private_key_path
+  //  user_ocid = var.user_ocid
+  //  fingerprint = var.fingerprint
+  //  private_key_path = var.private_key_path
 
 }
 
@@ -21,12 +21,12 @@ provider "oci" {
 
 // Home Provider
 provider "oci" {
-  alias            = "home"
-  region           = lookup(data.oci_identity_regions.home-region.regions[0], "name")
+  alias        = "home"
+  region       = lookup(data.oci_identity_regions.home-region.regions[0], "name")
   tenancy_ocid = var.tenancy_ocid
   ###### Uncomment the below if running locally using terraform and as not OCI Resource Manager stack #####
-//  user_ocid = var.user_ocid
-//  fingerprint = var.fingerprint
-//  private_key_path = var.private_key_path
+  //  user_ocid = var.user_ocid
+  //  fingerprint = var.fingerprint
+  //  private_key_path = var.private_key_path
 
 }

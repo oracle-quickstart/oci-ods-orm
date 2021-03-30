@@ -22,45 +22,46 @@ variableGroups:
     visible: false
   - title: "IAM Groups/Policies Configuration"
     variables:
-      - ${ods_group_name}
-      - ${ods_dynamic_group_name}
-      - ${ods_policy_name}
-      - ${ods_root_policy_name}
+      - ods_group_name
+      - ods_dynamic_group_name
+      - ods_policy_name
+      - ods_root_policy_name
   - title: "Network Configuration"
     variables:
-      - ${ods_vcn_use_existing}
-      - ${ods_vcn_existing}
-      - ${ods_vcn_name}
-      - ${ods_vcn_cidr}
-      - ${ods_subnet_public_existing}
-      - ${ods_subnet_public_name}
-      - ${ods_subnet_public_cidr}
-      - ${ods_subnet_private_existing}
-      - ${ods_subnet_private_name}
-      - ${ods_subnet_private_cidr}
+      - ods_vcn_use_existing
+      - ods_vcn_existing
+      - ods_vcn_name
+      - ods_vcn_cidr
+      - ods_subnet_public_existing
+      - ods_subnet_public_name
+      - ods_subnet_public_cidr
+      - ods_subnet_private_existing
+      - ods_subnet_private_name
+      - ods_subnet_private_cidr
   - title: "ODS Configuration"
     variables:
-      - ${enable_ods}
-      - ${ods_project_name}
-      - ${ods_notebook_name}
-      - ${ods_compute_shape}
-      - ${ods_storage_size}
-      - ${ods_number_of_notebooks}
-      - ${functions_enabled}
+      - enable_ods
+      - ods_project_name
+      - ods_notebook_name
+      - ods_compute_shape
+      - ods_storage_size
+      - ods_number_of_notebooks
+      - functions_enabled
   - title: "Vault Configuration"
     variables:
-      - ${enable_vault}
-      - ${ods_vault_name}
-      - ${ods_vault_type}
-      - ${enable_create_vault_master_key}
-      - ${ods_vault_master_key_name}
-      - ${ods_vault_master_key_length}
+      - enable_vault
+      - ods_use_existing_vault
+      - ods_existing_vault
+      - ods_vault_name
+      - ods_vault_type
+      - enable_create_vault_master_key
+      - ods_vault_master_key_name
+      - ods_vault_master_key_length
   - title: "Functions/API Gateway Configuration"
     variables:
-      - ${enable_functions_apigateway}
-      - ${functions_app_name}
-      - ${apigateway_name}
-
+      - enable_functions_apigateway
+      - functions_app_name
+      - apigateway_name
 
 variables:
   enable_ods:
@@ -69,17 +70,10 @@ variables:
     required: true
     default: true
   ods_compute_shape:
-    type: enum
-    enum:
-      - VM.Standard.E2.2
-      - VM.Standard.E2.4
-      - VM.Standard.E2.8
-      - VM.Standard2.1
-      - VM.Standard2.2
-      - VM.Standard2.4
-      - VM.Standard2.8
-      - VM.Standard2.16
-      - VM.Standard2.24
+    type: oci:ods:instanceshape:name
+    description: Select a shape
+    dependsOn:
+      compartmentId: ${compartment_ocid}
     title: "Notebook Compute Shape"
     required: true
     default: "VM.Standard2.1"
@@ -165,7 +159,7 @@ variables:
     default: "Data Science VCN"
     visible:
       not:
-        - ${ods_vcn_use_existing}
+        - ods_vcn_use_existing
   ods_vcn_cidr:
     type: string
     title: "VCN CIDR Space"
@@ -173,7 +167,7 @@ variables:
     default: "10.0.0.0/16"
     visible:
       not:
-        - ${ods_vcn_use_existing}
+        - ods_vcn_use_existing
   ods_subnet_public_name:
     type: string
     title: "Public Subnet Name"
@@ -182,7 +176,7 @@ variables:
     default: "Data Science - Public"
     visible:
       not:
-        - ${ods_vcn_use_existing}
+        - ods_vcn_use_existing
   ods_subnet_public_cidr:
     type: string
     title: "Public Subnet CIDR Space"
@@ -190,7 +184,7 @@ variables:
     default: "10.0.0.0/24"
     visible:
       not:
-        - ${ods_vcn_use_existing}
+        - ods_vcn_use_existing
   ods_subnet_private_name:
     type: string
     title: "Private Subnet Name"
@@ -199,7 +193,7 @@ variables:
     default: "Data Science - Private"
     visible:
       not:
-        - ${ods_vcn_use_existing}
+        - ods_vcn_use_existing
   ods_subnet_private_cidr:
     type: string
     title: "Private Subnet CIDR Space"
@@ -207,7 +201,7 @@ variables:
     default: "10.0.1.0/24"
     visible:
       not:
-        - ${ods_vcn_use_existing}
+        - ods_vcn_use_existing
   enable_functions_apigateway:
     type: boolean
     title: "Provision Functions and API Gateway?"
@@ -261,18 +255,40 @@ variables:
     description: "Create a vault and master encryption key that you manage and can use to encrypt Data Science resources."
     required: true
     default: true
+  ods_use_existing_vault:
+    type: boolean
+    title: "Use Existing vault?"
+    description: "Use a pre-existing vault in the current compartment."
+    required: true
+    default: false
+    visible: enable_vault
+
+  ods_existing_vault:
+    type: oci:kms:vault:id
+    title: "Select a vault"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    visible: ods_use_existing_vault
   ods_vault_name:
     type: string
     title: "Name of the Vault to provision"
     default: "Data Science Vault"
     required: true
-    visible: ${enable_vault}
+    visible:
+      and:
+        - enable_vault
+        - not:
+            - ods_use_existing_vault
   ods_vault_type:
     type: enum
     title: "Vault Type"
     default: "DEFAULT"
     required: true
-    visible: ${enable_vault}
+    visible:
+      and:
+        - enable_vault
+        - not:
+            - ods_use_existing_vault
     enum:
       - DEFAULT
       - VIRTUAL
@@ -281,7 +297,11 @@ variables:
     title: "Create a master encryption key in the vault?"
     required: true
     default: true
-    visible: ${enable_vault}
+    visible:
+      and:
+        - enable_vault
+        - not:
+            - ods_use_existing_vault
   ods_vault_master_key_name:
     type: string
     title: "Name of the master encryption key"
@@ -289,8 +309,10 @@ variables:
     required: true
     visible:
       and:
-        - ${enable_vault}
-        - ${enable_create_vault_master_key}
+        - enable_vault
+        - enable_create_vault_master_key
+        - not:
+            - ods_use_existing_vault
   ods_vault_master_key_length:
     type: enum
     title: "Length of the master encryption key"
@@ -298,8 +320,10 @@ variables:
     required: true
     visible:
       and:
-      - ${enable_vault}
-      - ${enable_create_vault_master_key}
+        - enable_vault
+        - enable_create_vault_master_key
+        - not:
+            - ods_use_existing_vault
     enum:
       - 16
       - 24
