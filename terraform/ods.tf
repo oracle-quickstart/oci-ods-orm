@@ -24,10 +24,11 @@ resource "oci_datascience_notebook_session" "ods-notebook-session" {
   compartment_id = var.compartment_ocid
   notebook_session_configuration_details {
     #Required
-    shape     = var.ods_compute_shape
-    subnet_id = local.private_subnet_id
-    # subnet_id = oci_core_subnet.ods-private-subnet[0].id
-    # subnet_id = var.ods_vcn_use_existing ? var.ods_subnet_private_existing : oci_core_subnet.ods-private-subnet[0].id
+
+    shape = var.ods_compute_shape
+    # subnet_id = local.private_subnet_id
+    subnet_id = var.ods_vcn_use_existing ? var.ods_subnet_private_existing : oci_core_subnet.ods-private-subnet[0].id
+
 
     #Optional
     block_storage_size_in_gbs = var.ods_storage_size
