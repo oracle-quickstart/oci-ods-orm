@@ -22,7 +22,7 @@ variable "ods_number_of_notebooks" {
   default = 1
 }
 variable "enable_ods" {
-  type = bool
+  type    = bool
   default = true
 }
 
@@ -30,7 +30,7 @@ variable "enable_ods" {
 #    Functions/API Gateway Specific
 #*************************************
 variable "enable_functions_apigateway" {
-  type = bool
+  type    = bool
   default = true
 }
 variable "functions_app_name" {
@@ -96,7 +96,7 @@ variable "ods_root_policy_name" {
 #          Vault Specific
 #*************************************
 variable "enable_vault" {
-  type = bool
+  type    = bool
   default = true
 }
 variable "ods_use_existing_vault" {
@@ -110,7 +110,7 @@ variable "ods_vault_type" {
   default = "DEFAULT"
 }
 variable "enable_create_vault_master_key" {
-  type = bool
+  type    = bool
   default = true
 }
 variable "ods_vault_master_key_name" {
@@ -131,10 +131,10 @@ variable "region" {
 variable "user_ocid" {
   default = ""
 }
-variable "private_key_path"{
+variable "private_key_path" {
   default = ""
 }
-variable "fingerprint"{
+variable "fingerprint" {
   default = ""
 }
 variable "compartment_ocid" {
@@ -145,8 +145,8 @@ variable "compartment_ocid" {
 #        Local Variables
 #*************************************
 locals {
-  public_subnet_id = var.ods_vcn_use_existing ? var.ods_subnet_public_existing : oci_core_subnet.ods-public-subnet[0].id
-  private_subnet_id = var.ods_vcn_use_existing? var.ods_subnet_private_existing : oci_core_subnet.ods-private-subnet[0].id
+  public_subnet_id  = var.ods_vcn_use_existing ? var.ods_subnet_public_existing : oci_core_subnet.ods-public-subnet[0].id
+  private_subnet_id = var.ods_vcn_use_existing ? var.ods_subnet_private_existing : oci_core_subnet.ods-private-subnet[0].id
 }
 
 #*************************************
@@ -165,7 +165,7 @@ data "oci_identity_regions" "home-region" {
 }
 data "oci_identity_regions" "current_region" {
   filter {
-    name = "name"
+    name   = "name"
     values = [var.region]
   }
 }
@@ -173,7 +173,9 @@ data "oci_identity_compartment" "current_compartment" {
   #Required
   id = var.compartment_ocid
 }
+
 data "oci_datascience_notebook_session_shapes" "test_notebook_session_shapes" {
   #Required
   compartment_id = var.compartment_ocid
 }
+

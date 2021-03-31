@@ -269,6 +269,7 @@ variables:
     dependsOn:
       compartmentId: ${compartment_ocid}
     visible: ods_use_existing_vault
+
   ods_vault_name:
     type: string
     title: "Name of the Vault to provision"
@@ -313,6 +314,7 @@ variables:
         - enable_create_vault_master_key
         - not:
             - ods_use_existing_vault
+
   ods_vault_master_key_length:
     type: enum
     title: "Length of the master encryption key"
