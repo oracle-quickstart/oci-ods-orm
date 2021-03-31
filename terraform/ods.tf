@@ -35,4 +35,12 @@ resource "oci_datascience_notebook_session" "ods-notebook-session" {
   project_id = oci_datascience_project.ods-project[0].id
 
   display_name = "${var.ods_notebook_name}-${count.index}"
+
 }
+
+  depends_on = [
+    oci_identity_policy.ods-policy,
+    oci_identity_policy.ods-root-policy,
+  ]
+}
+

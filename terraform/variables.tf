@@ -99,6 +99,10 @@ variable "enable_vault" {
   type    = bool
   default = true
 }
+variable "ods_use_existing_vault" {
+  type = bool
+  default = false
+}
 variable "ods_vault_name" {
   default = "Data Science Vault"
 }
@@ -110,7 +114,7 @@ variable "enable_create_vault_master_key" {
   default = true
 }
 variable "ods_vault_master_key_name" {
-  default = "DataScienceKey"
+  default = "Data Science Master Key"
 }
 variable "ods_vault_master_key_length" {
   default = 32
@@ -169,3 +173,9 @@ data "oci_identity_compartment" "current_compartment" {
   #Required
   id = var.compartment_ocid
 }
+
+data "oci_datascience_notebook_session_shapes" "test_notebook_session_shapes" {
+  #Required
+  compartment_id = var.compartment_ocid
+}
+
