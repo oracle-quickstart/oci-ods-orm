@@ -22,7 +22,7 @@ resource "oci_identity_dynamic_group" "ods-dynamic-group" {
   compartment_id = var.tenancy_ocid
   description    = "Data Science Dynamic Group"
   name           = var.ods_dynamic_group_name
-  matching_rule  = "any {all {resource.type='fnfunc',resource.compartment.id='${var.compartment_ocid}'}, all {resource.type='ApiGateway',resource.compartment.id='${var.compartment_ocid}'}, all {resource.type='datasciencenotebooksession',resource.compartment.id='${var.compartment_ocid}'} }"
+  matching_rule  = "any {all {resource.type='fnfunc',resource.compartment.id='${var.compartment_ocid}'}, all {resource.type='ApiGateway',resource.compartment.id='${var.compartment_ocid}'}, all {resource.type='datasciencenotebooksession',resource.compartment.id='${var.compartment_ocid}'}, all {resource.type='datasciencemodeldeployment',resource.compartment.id='${var.compartment_ocid}'}, all {resource.type='datasciencejobrun',resource.compartment.id='${var.compartment_ocid}'}}"
 }
 
 #*************************************
@@ -33,8 +33,10 @@ locals {
     "Allow group ${oci_identity_group.ods-group.name} to manage vaults ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
     "Allow group ${oci_identity_group.ods-group.name} to manage keys ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
     "Allow group ${oci_identity_group.ods-group.name} to manage secret-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage secret-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}"
+    "Allow group ${oci_identity_group.ods-group.name} to manage data-science-models ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
+    "Allow group ${oci_identity_group.ods-group.name} use log-content ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}"
   ]
+
   ods_policies = [
     "Allow group ${oci_identity_group.ods-group.name} to manage data-science-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
     "Allow group ${oci_identity_group.ods-group.name} to use virtual-network-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
@@ -51,7 +53,10 @@ locals {
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage data-science-model-deployments ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to read compartments ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to read users ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage all-resources ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}"
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage all-resources ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage secret-family ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} use log-content ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to {DATA_SCIENCE_MODEL_DEPLOYMENT_PREDICT} ${data.oci_identity_compartment.current_compartment.id == var.tenancy_ocid ? "in tenancy" : "in compartment ${data.oci_identity_compartment.current_compartment.name}"}"
   ]
 }
 resource "oci_identity_policy" "ods-policy" {
