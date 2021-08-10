@@ -3,7 +3,7 @@
 # 
 
 terraform {
-  required_version = ">= 0.14"
+  required_version = ">= 1.0"
 }
 
 // Default Provider
@@ -28,5 +28,4 @@ provider "oci" {
   //  user_ocid = var.user_ocid
   //  fingerprint = var.fingerprint
   //  private_key_path = var.private_key_path
-
 }
