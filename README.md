@@ -21,7 +21,7 @@ Below is a list of all artifacts that will be provisioned:
 | [Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm)        | Oracle Cloud Infrastructure Users Group              | False    | All Policies are granted to this group, you can add users to this group to grant me access to ODS services.
 | [Dynamic Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) | Oracle Cloud Infrastructure Dynamic Group           | False    | Dynamic Group for Functions and API Gateway.
 | [Policies (compartment)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)   | Oracle Cloud Infrastructure Security Policies        | False              | A policy at the compartment level to grant access to ODS, VCN, Functions and API Gateway
-| [Policies (root)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)    | Oracle Cloud Infrastructure Security Policies        | False              | A policy at the root compartment level to grant access to OCIR in tenancy. 
+| [Policies (root)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)    | Oracle Cloud Infrastructure Security Policies        | False              | A policy at the root compartment level to grant access to OCIR in tenancy.
 
 ## Prerequisite
 
@@ -36,51 +36,54 @@ Below is a list of all artifacts that will be provisioned:
 1. Make sure you select **My Configurations** and then upload the zip file downloaded in the previous step.
 1. Set a name for the stack and click Next.
 1. Set the required variables values and then Create.
-    ![create stack](docs/create_stack.gif)
+    ![create stack](images/create_stack.gif)
 
 1. From the stack details page, Select **Plan** under **Terraform Actions** menu button and make sure it completes successfully.
-    ![plan](docs/plan.png)
-    
+    ![plan](images/plan.png)
+
 1. From the stack details page, Select **Apply** under **Terraform Actions** menu button and make sure it completes successfully.
-    ![Apply](docs/apply.png)
-    
+    ![Apply](images/apply.png)
+
 1. To destroy all created artifacts, from the stack details page, Select **Destroy** under **Terraform Actions** menu button and make sure it completes successfully.
-    ![Destroy](docs/destroy.png)
-    
+    ![Destroy](images/destroy.png)
+
 ### Understanding Provisioning Options
 
-* **IAM Groups/Policies** change default names of Groups and Policies to be created.
+- **IAM Groups/Policies** change default names of Groups and Policies to be created.
 
-    ![IAM Configs](docs/orm_iam.png)
-    
-* If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
+    ![IAM Configs](images/orm_iam.png)
 
-    ![Network Configs](docs/orm_network.png)
-    
-* If **Provision ODS** is selected, ODS Project and Notebook session will be provisioned, you can change the default values if needed, otherwise no ODS artifacts will be provisioned, _**however**_ all other artifacts (Network, Policies, Function, API Gateway) will be provisioned.
+- If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
 
-    ![ODS Configs](docs/orm_ods.png)
-    
-* If **Enable Vault Support** is selected, Oracle Cloud Infrastructure Vault along with all required IAM policies will be provisioned, you can change the default values if needed, otherwise Oracle Cloud Infrastructure Vault will not be provisioned.
+    ![Network Configs](images/orm_network.png)
 
-    ![Vault Configs](docs/orm_vault.png)
-    
-* If **Provision Functions and API Gateway** is selected, a **Function** and **API Gateway** will be provisioned. You can change default values if needed. **_Note_** that no **_Function Deployment_** or **_API Gateway Deployment_** will be provisioned.
+- If **Provision ODS** is selected, ODS Project and Notebook session will be provisioned, you can change the default values if needed, otherwise no ODS artifacts will be provisioned, _**however**_ all other artifacts (Network, Policies, Function, API Gateway) will be provisioned.
 
-    ![FUNCTIONS Configs](docs/orm_functions_apigateway.png)
+    ![ODS Configs](images/orm_ods.png)
 
-    
+- If **Enable Vault Support** is selected, Oracle Cloud Infrastructure Vault along with all required IAM policies will be provisioned, you can change the default values if needed, otherwise Oracle Cloud Infrastructure Vault will not be provisioned.
+
+    ![Vault Configs](images/orm_vault.png)
+
+- If **Provision Functions and API Gateway** is selected, a **Function** and **API Gateway** will be provisioned. You can change default values if needed. **_Note_** that no **_Function Deployment_** or **_API Gateway Deployment_** will be provisioned.
+
+    ![FUNCTIONS Configs](images/orm_functions_apigateway.png)
+
+
 ## Using Terraform
 
-1. Clone repo 
-   ```
+1. Clone repo
+
+   ```bash
    git clone git@github.com:oracle-quickstart/oci-ods-orm.git
    cd oci-ods-orm/terraform
    ```
+
 1. Create a copy of the file **oci-ods-orm/terraform/terraform.tfvars.example** in the same directory and name it **terraform.tfvars**.
 1. Open the newly created **oci-ods-orm/terraform/terraform.tfvars** file and edit the following sections:
-    * **TF Requirements** : Add your Oracle Cloud Infrastructure user and tenant details:
-        ```
+    - **TF Requirements** : Add your Oracle Cloud Infrastructure user and tenant details:
+
+        ```text
            #*************************************
            #           TF Requirements
            #*************************************
@@ -99,8 +102,9 @@ Below is a list of all artifacts that will be provisioned:
            fingerprint=""
         ```
 
-    * **ODS Requirements** : Check Default values for ODS artifacts and change them if needed
-        ```
+    - **ODS Requirements** : Check Default values for ODS artifacts and change them if needed
+
+        ```text
            #*************************************
            #           ODS Specific
            #*************************************
@@ -126,9 +130,11 @@ Below is a list of all artifacts that will be provisioned:
            ods_storage_size="50"
            // Number of Notebooks to provision, default is 1.
            ods_number_of_notebooks=1
-        ``` 
-    * **Network Requirements**: Check default values for Network artifacts and change them if needed
         ```
+
+    - **Network Requirements**: Check default values for Network artifacts and change them if needed
+
+        ```text
             #*************************************
             #         Network Specific
             #*************************************
@@ -156,8 +162,10 @@ Below is a list of all artifacts that will be provisioned:
             // Existing Private Subnet OCID. Only Applies if "ods_vcn_use_existing" is set to true. Subnet must exists within the selected "existing VCN"
             ods_subnet_private_existing = ""
         ```
-    *  **Functions/API Gateway Requirements**: Check default values for Functions/API Gateway artifacts and change them if needed
-        ```
+
+    - **Functions/API Gateway Requirements**: Check default values for Functions/API Gateway artifacts and change them if needed
+
+        ```text
            #*************************************
            #    Functions/API Gateway Specific
            #*************************************
@@ -168,9 +176,11 @@ Below is a list of all artifacts that will be provisioned:
            functions_app_name="DataScienceApp"
            // Name of the "API Gateway"
            apigateway_name="Data Science Gateway"       
-        ``` 
-    *  **IAM Requirements**: Check default values for IAM artifacts and change them if needed
         ```
+
+    - **IAM Requirements**: Check default values for IAM artifacts and change them if needed
+
+        ```text
            #*************************************
            #          IAM Specific
            #*************************************
@@ -186,8 +196,10 @@ Below is a list of all artifacts that will be provisioned:
            // If enabled, the needed OCI policies to manage "OCI Vault service" will be created 
            enable_vault_policies= true
         ```
-    * **Vault Specific**: check default values for OCI Vault and change them if needed
-        ```
+
+    - **Vault Specific**: check default values for OCI Vault and change them if needed
+
+        ```text
           #*************************************
           #          Vault Specific
           #*************************************
@@ -203,9 +215,11 @@ Below is a list of all artifacts that will be provisioned:
           ods_vault_master_key_name = "DataScienceKey"
           // ODS Vault Master Key length, allowed values (16, 24, 32)
           ods_vault_master_key_length = 32
-        ```   
+        ```
+
 1. Open file **oci-ods-orm/terraform/provider.tf** and uncomment the (user_id , fingerprint, private_key_path) in the **_two_** providers (**Default Provider** and **Home Provider**)
-    ```
+
+    ```text
         // Default Provider
         provider "oci" {
           region = var.region
@@ -231,21 +245,29 @@ Below is a list of all artifacts that will be provisioned:
         
         }
     ```
-1. Initialize terraform provider 
+
+1. Initialize terraform provider
+
+    ```bash
+    > terraform init
     ```
-    $ terraform init
+
+1. Plan terraform scripts
+
+    ```bash
+    > terraform plan
    ```
-1. Plan terraform scripts 
-    ```
-    $ terraform plan
+
+1. Run terraform scripts
+
+    ```bash
+    > terraform apply -auto-approve
    ```
-1. Run terraform scripts 
-    ```
-    $ terraform apply -auto-approve
-   ```
-1. To Destroy all created artifacts 
-    ```
-    $ terraform destroy -auto-approve
+
+1. To Destroy all created artifacts
+
+    ```bash
+    > terraform destroy -auto-approve
    ```
 
 ## Contributing
