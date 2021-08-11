@@ -6,9 +6,9 @@
 #           ODS Project
 #*************************************
 
-resource "time_sleep" "wait_30_seconds" {
+resource "time_sleep" "wait_15_seconds" {
   depends_on = [oci_core_subnet.ods-private-subnet]
-  create_duration = "60s"
+  create_duration = "15s"
 }
 
 
@@ -45,6 +45,6 @@ resource "oci_datascience_notebook_session" "ods-notebook-session" {
   depends_on = [
     oci_identity_policy.ods-policy,
     oci_identity_policy.ods-root-policy,
-    time_sleep.wait_30_seconds
+    time_sleep.wait_15_seconds
   ]
 }
