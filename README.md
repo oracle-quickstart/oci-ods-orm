@@ -10,18 +10,10 @@ Below is a list of all artifacts that will be provisioned:
 
 | Component    | Default Name            | Optional |  Notes
 |--------------|-------------------------|----------|:-----------|
-| [ODS Project](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-projects.htm)  | Oracle Cloud Infrastructure Data Science Project     | True     |  -
-| [ODS Notebook](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm) | Oracle Cloud Infrastructure Data Science Notebook(s) | True     | You can provision more than one notebook, and each notebook will be prefixed with an index (x) starting from (0) 
-| [Functions](https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsconcepts.htm)    | Oracle Cloud Infrastructure Function Application     | True     | Only Oracle Cloud Infrastructure **Functions Application** will be provisioned without a **Function deployment**. This is a placeholder application so you can deploy your model application later on.
-| [API Gateway](https://docs.cloud.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayconcepts.htm)  | Oracle Cloud Infrastructure API Gateway              | True     | Only Oracle Cloud Infrastructure **API Gateway** will be provisioned without an **API Gateway deployment**. The gateway is used to expose the Oracle Cloud Infrastructure Function through a REST interface.
-| [Vault](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm)            | Oracle Cloud Infrastructure Vault                        | True     | Oracle Cloud Infrastructure Vault can be used to store credentials rather than storing them in ODS Notebook.
-| [Vault Master Key](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm) | Oracle Cloud Infrastructure Vault Master Key             | True     | Oracle Cloud Infrastructure Vault Master Key can be used encrypt/decrypt credentials for secured access.                             
-| [VCN](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)          | Oracle Cloud Infrastructure VCN                      | True     | Oracle Cloud Infrastructure VCN and all its related artifacts (Subnets, Security Lists, Routing Tables, Internet Gateway, Nat Gateway).
-| [Subnets](https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/managingVCNs.htm#VCNsandSubnets)      | Oracle Cloud Infrastructure VCN Subnets              | True | One **Public Subnet** with its Security List and Routing Table and configured with an Internet Gateway (Hosts API Gateway). One **Private Subnet** and its Security List and Routing Table and configured with a NAT Gateway and hosts (ODS Project, ODS Notebooks, Function)
 | [Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm)        | Oracle Cloud Infrastructure Users Group              | False    | All Policies are granted to this group, you can add users to this group to grant me access to ODS services.
-| [Dynamic Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) | Oracle Cloud Infrastructure Dynamic Group           | False    | Dynamic Group for Functions and API Gateway.
-| [Policies (compartment)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)   | Oracle Cloud Infrastructure Security Policies        | False              | A policy at the compartment level to grant access to ODS, VCN, Functions and API Gateway
-| [Policies (root)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)    | Oracle Cloud Infrastructure Security Policies        | False              | A policy at the root compartment level to grant access to OCIR in tenancy.
+| [Dynamic Group](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) | Oracle Cloud Infrastructure Dynamic Group           | False    | Dynamic Group for Data Science Resources.
+| [Policies (compartment)](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Concepts/policygetstarted.htm)   | Oracle Cloud Infrastructure Security Policies        | False              | A policy at the compartment level to grant access to ODS
+| [Vault Master Key](https://docs.cloud.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm) | Oracle Cloud Infrastructure Vault Master Key             | True     | Oracle Cloud Infrastructure Vault Master Key can be used encrypt/decrypt credentials for secured access.
 
 ## Prerequisite
 
@@ -53,22 +45,9 @@ Below is a list of all artifacts that will be provisioned:
 
     ![IAM Configs](images/orm_iam.png)
 
-- If **Use Existing VCN** is **_NOT_** selected, A new VCN will be created along with all its related artifacts (Subnets, Security Lists, Route Tables, Internet Gateway, NAT Gateway), and all artifacts will be provisioned within that VCN. **_Otherwise_** (Use Existing VCN is selected), you need to select an existing VCN and subnets, then all artifacts will provisioned within the selected VCN and Subnets.
-
-    ![Network Configs](images/orm_network.png)
-
-- If **Provision ODS** is selected, ODS Project and Notebook session will be provisioned, you can change the default values if needed, otherwise no ODS artifacts will be provisioned, _**however**_ all other artifacts (Network, Policies, Function, API Gateway) will be provisioned.
-
-    ![ODS Configs](images/orm_ods.png)
-
 - If **Enable Vault Support** is selected, Oracle Cloud Infrastructure Vault along with all required IAM policies will be provisioned, you can change the default values if needed, otherwise Oracle Cloud Infrastructure Vault will not be provisioned.
 
     ![Vault Configs](images/orm_vault.png)
-
-- If **Provision Functions and API Gateway** is selected, a **Function** and **API Gateway** will be provisioned. You can change default values if needed. **_Note_** that no **_Function Deployment_** or **_API Gateway Deployment_** will be provisioned.
-
-    ![FUNCTIONS Configs](images/orm_functions_apigateway.png)
-
 
 ## Using Terraform
 
@@ -102,82 +81,6 @@ Below is a list of all artifacts that will be provisioned:
            fingerprint=""
         ```
 
-    - **ODS Requirements** : Check Default values for ODS artifacts and change them if needed
-
-        ```text
-           #*************************************
-           #           ODS Specific
-           #*************************************
-           // Provision ODS Project and Notebook
-           enable_ods=true
-           // ODS Default Project Name
-           ods_project_name= "Data Science Project"
-           // ODS Notebook Name
-           ods_notebook_name = "Data Science Notebook"
-           // Default Compute shape to use for a Notebook. Supported VM Shapes:
-           //    - VM.Standard.E2.2
-           //    - VM.Standard.E2.4
-           //    - VM.Standard.E2.8
-           //    - VM.Standard2.1
-           //    - VM.Standard2.2
-           //    - VM.Standard2.4
-           //    - VM.Standard2.8
-           //    - VM.Standard2.16
-           //    - VM.Standard2.24
-           // VM Shapes Specs details can be found at https://docs.cloud.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#virtualmachines
-           ods_compute_shape="VM.Standard2.1"
-           // Notebook storage size in GB, minimum is 50 and maximum is 1024 (1TB)
-           ods_storage_size="50"
-           // Number of Notebooks to provision, default is 1.
-           ods_number_of_notebooks=1
-        ```
-
-    - **Network Requirements**: Check default values for Network artifacts and change them if needed
-
-        ```text
-            #*************************************
-            #         Network Specific
-            #*************************************
-            
-            // Use an existing VCN or create a new VCN along with all its related artifacts 
-            ods_vcn_use_existing = false
-            
-            // VCN Name Default Name. Only Applies if "ods_vcn_use_existing" is set to false
-            ods_vcn_name="Data Science VCN"
-            // VCN CIDR Space. Only Applies if "ods_vcn_use_existing" is set to false
-            ods_vcn_cidr="10.0.0.0/16"
-            // Public Subnet Default Name. Only Applies if "ods_vcn_use_existing" is set to false
-            ods_subnet_public_name="Data Science - Public"
-            // Public Subnet CIDR Space. Only Applies if "ods_vcn_use_existing" is set to false
-            ods_subnet_public_cidr = "10.0.0.0/24"
-            // Private Subnet Default Name. Only Applies if "ods_vcn_use_existing" is set to false
-            ods_subnet_private_name = "Data Science - Private"
-            // Private Subnet CIDR Space. Only Applies if "ods_vcn_use_existing" is set to false
-            ods_subnet_private_cidr = "10.0.1.0/24"
-            
-            // Existing VCN OCID. Only Applies if "ods_vcn_use_existing" is set to true
-            ods_vcn_existing= ""
-            // Existing Public Subnet OCID. Only Applies if "ods_vcn_use_existing" is set to true. Subnet must exists within the selected "existing VCN"
-            ods_subnet_public_existing = ""
-            // Existing Private Subnet OCID. Only Applies if "ods_vcn_use_existing" is set to true. Subnet must exists within the selected "existing VCN"
-            ods_subnet_private_existing = ""
-        ```
-
-    - **Functions/API Gateway Requirements**: Check default values for Functions/API Gateway artifacts and change them if needed
-
-        ```text
-           #*************************************
-           #    Functions/API Gateway Specific
-           #*************************************
-           
-           // Provision Functions Application and its associated API Gateway
-           enable_functions_apigateway=true
-           // Name of the "Functions Application", no spaces are allowed
-           functions_app_name="DataScienceApp"
-           // Name of the "API Gateway"
-           apigateway_name="Data Science Gateway"       
-        ```
-
     - **IAM Requirements**: Check default values for IAM artifacts and change them if needed
 
         ```text
@@ -191,8 +94,6 @@ Below is a list of all artifacts that will be provisioned:
            ods_dynamic_group_name= "DataScienceDynamicGroup"
            // ODS IAM Policy Name (no spaces)
            ods_policy_name= "DataSciencePolicies"
-           // ODS IAM Root Policy Name (no spaces)
-           ods_root_policy_name= "DataScienceRootPolicies"
            // If enabled, the needed OCI policies to manage "OCI Vault service" will be created 
            enable_vault_policies= true
         ```
