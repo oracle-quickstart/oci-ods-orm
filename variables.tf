@@ -6,9 +6,6 @@
 #           ODS Specific
 #*************************************
 
-variable "ods_project_name" {
-  default = "Data Science Project"
-}
 variable "ods_notebook_name" {
   default = "Data Science Notebook"
 }
