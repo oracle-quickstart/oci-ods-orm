@@ -49,13 +49,34 @@ locals {
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to use vaults in compartment ${data.oci_identity_compartment.current_compartment.name}",
     "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage keys in compartment ${data.oci_identity_compartment.current_compartment.name}"
   ]
+  ods_root_policies = [
+    "Allow service datascience to use virtual-network-family in tenancy",
+    "Allow group ${oci_identity_group.ods-group.name} to read metrics in tenancy",
+    "Allow group ${oci_identity_group.ods-group.name} to manage data-science-family in tenancy" ,
+    "Allow group ${oci_identity_group.ods-group.name} to manage log-groups in tenancy",
+    "Allow group ${oci_identity_group.ods-group.name} to use log-content in tenancy",
+    "Allow group ${oci_identity_group.ods-group.name} to use virtual-network-family in tenancy",
+    "Allow group ${oci_identity_group.ods-group.name} to use object-family in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to use log-content in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to read virtual-network-family in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage data-science-family in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to use object-family in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to read repos in tenancy"
+  ]
+  vault_root_policies = [
+    "Allow group ${oci_identity_group.ods-group.name} to use vaults in tenancy",
+    "Allow group ${oci_identity_group.ods-group.name} to manage keys in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to use vaults in tenancy",
+    "Allow dynamic-group ${oci_identity_dynamic_group.ods-dynamic-group.name} to manage keys in tenancy"
+  ]
 }
 resource "oci_identity_policy" "ods-policy" {
   provider       = oci.home
   compartment_id = var.compartment_ocid
   description    = "Data Science Policies"
   name           = var.ods_policy_name
-  statements     = var.enable_vault ? concat(local.ods_policies, local.vault_policies) : local.ods_policies
+  statements     = var.compartment_ocid == var.tenancy_ocid ? var.enable_vault ? concat(local.ods_root_policies, local.vault_root_policies) : local.ods_root_policies : var.enable_vault ? concat(local.ods_policies, local.vault_policies) : local.ods_policies
+
 }
 
 #*************************************
