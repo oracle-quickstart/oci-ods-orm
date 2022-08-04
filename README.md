@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/oci-ods-orm/releases/download/v2.0.0/oci-ods-orm-v2.0.0.zip)
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/oci-ods-orm/releases/download/v2.0.1/oci-ods-orm-v2.0.1.zip)
 
 This solution allows you to provision [Oracle Data Science (**_ODS_**)](https://docs.cloud.oracle.com/en-us/iaas/data-science/using/data-science.htm) and all its related artifacts using [Terraform](https://www.terraform.io/docs/providers/oci/index.html) and [Oracle Cloud Infrastructure Resource Manager](https://docs.cloud.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm).
 
@@ -23,7 +23,7 @@ Below is a list of all artifacts that will be provisioned:
 ## Using Oracle Resource Manager (ORM)
 
 1. clone repo `git clone git@github.com:oracle-quickstart/oci-ods-orm.git`
-1. Download [`oci-ods-orm-v2.0.0.zip`](https://github.com/oracle-quickstart/oci-ods-orm/releases/download/v2.0.0/oci-ods-orm-v2.0.0.zip) file
+1. Download [`oci-ods-orm-v2.0.1.zip`](https://github.com/oracle-quickstart/oci-ods-orm/releases/download/v2.0.1/oci-ods-orm-v2.0.1.zip) file
 1. From Oracle Cloud Infrastructure **Console/Resource Manager**, create a new stack.
 1. Make sure you select **My Configurations** and then upload the zip file downloaded in the previous step.
 1. Set a name for the stack and click Next.
