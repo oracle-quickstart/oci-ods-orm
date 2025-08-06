@@ -176,3 +176,14 @@ Below is a list of all artifacts that will be provisioned:
 `oci-ods-orm` is an open source project. See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 Oracle gratefully acknowledges the contributions to `oci-ods-orm` that have been made by the community.
+
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+
+## License
+
+Copyright (c) 2023 Oracle and/or its affiliates.
+
+Released under the Universal Permissive License v1.0 as shown at
+<https://oss.oracle.com/licenses/upl/>.
